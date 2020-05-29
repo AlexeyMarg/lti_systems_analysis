@@ -24,7 +24,7 @@ def poles(lsys):
         return np.linalg.eigvals(lsys.A)
     elif isinstance(lsys, TFC) or isinstance(lsys, TFD):
         plant = tf2ss(lsys)
-        poles(plant)
+        return np.linalg.eigvals(plant.A)
     else:
         print("Wrong data type")
 
@@ -55,7 +55,7 @@ def observable(lsys):
             temp = np.linalg.matrix_power(lsys.A, i)
             temp = np.dot(lsys.C, temp)
             Q = np.concatenate((Q, temp), axis=0)
-        if np.linalg.matrix_rank == len(lsys.A):
+        if np.linalg.matrix_rank(Q) == len(lsys.A):
             return True
         else:
             return False

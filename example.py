@@ -1,6 +1,7 @@
 import lsys
 import numpy as np
 
+#       Objects declaration
 # Continuous state space plant
 A = np.array([[0., 1.],
               [-1., -2.]])
@@ -24,5 +25,21 @@ wc = lsys.TFC(num, den)
 # Discrete transfer function
 num = np.array([0.004679, 0.004377])
 den = np.array([1., -1.81, 0.8187])
-wd = lsys.TFC(num, den)
+wd = lsys.TFD(num, den, 0.1)
+
+#       Functions examples
+# lsys.data()
+print('Matrices of continuous plant:\n{}'.format(lsys.data(plant_ssc)))
+print('Matrices of discrete plant and sampling time:\n{}'.format(lsys.data(plant_ssd)))
+print('Numerator and denominator of continuous plant:\n{}'.format(lsys.data(wc)))
+print('Numerator, denominator and sample time of discrete plant:\n{}'.format(lsys.data(wd)))
+# poles
+print('Poles of continuous plant:\n{}'.format(lsys.poles(plant_ssc)))
+print('Poles of discrete plant:\n{}'.format(lsys.poles(plant_ssd)))
+print('Poles of continuous transfer function:\n{}'.format(lsys.poles(wc)))
+print('Poles of discrete transfer function:\n{}'.format(lsys.poles(wd)))
+# controlable
+print('Is plant_ssc controlable?\n{}'.format(lsys.controlable(plant_ssc)))
+# observable
+print('Is plant_ssc observable?\n{}'.format(lsys.observable(plant_ssc)))
 
