@@ -30,51 +30,48 @@ def tf2ss(lsys_tf):
         return lsys_types.SSD(A, B, C, np.array([[0.]]), lsys_tf.sampletime)
 
 
-def ss2tf(lsys):
-    if isinstance(lsys, lsys_types.SSD) or isinstance(lsys, lsys_types.SSC):
+def ss2tf(sys):
+    if isinstance(sys, lsys_types.SSD) or isinstance(sys, lsys_types.SSC):
         s = sym.Symbol('s')
-        temp = sym.Matrix(s * np.eye(len(lsys.A)) - lsys.A)
-        temp = lsys.C @ temp.inv() @ lsys.B
+        temp = sym.Matrix(s * np.eye(len(sys.A)) - sys.A)
+        temp = sys.C @ temp.inv() @ sys.B
         temp = sym.fraction(sym.simplify(temp[0, 0]))
         num = sym.Poly(temp[0], s).coeffs()
         den = sym.Poly(temp[1], s).coeffs()
-        if isinstance(lsys, lsys_types.SSD):
-            return lsys_types.TFD(np.array([num, den]), lsys.sampletime)
-        elif isinstance(lsys, lsys_types.SSC):
-            return lsys_types.TFC(np.array([num, den]))
+        if isinstance(sys, lsys_types.SSD):
+            return lsys_types.TFD(np.array(num), np.array(den), sys.sampletime)
+        elif isinstance(sys, lsys_types.SSC):
+            return lsys_types.TFC(np.array(num), np.array(den))
     else:
         print("Wrong input data")
         return
 
 
-def c2d(lsys, T: float):
-    if isinstance(lsys, lsys_types.SSC):
-        A = la.expm(lsys.A*T)
-        B = la.inv(lsys.A) @ (la.expm(lsys.A*T) - np.eye(len(lsys.A))) @ lsys.B
-        C = lsys.C
-        D = lsys.D
+def c2d(sys, T: float):
+    if isinstance(sys, lsys_types.SSC):
+        A = la.expm(sys.A*T)
+        B = la.inv(sys.A) @ (la.expm(sys.A*T) - np.eye(len(sys.A))) @ sys.B
+        C = sys.C
+        D = sys.D
         return lsys_types.SSD(A, B, C, D, T)
-    elif isinstance(lsys, lsys_types.TFC):
-        plant = tf2ss(lsys)
+    elif isinstance(sys, lsys_types.TFC):
+        plant = tf2ss(sys)
         return c2d(plant, T)
     else:
         print("Wrong input data")
         return
 
 
-def d2c(lsys):
-    if isinstance(lsys, lsys_types.SSD):
-        A = la.logm(lsys.A) / lsys.sampletime
-        B = la.inv(la.expm(A*lsys.sampletime)-np.eye(len(A))) @ A @ lsys.B
-        C = lsys.C
-        D = lsys.D
+def d2c(sys):
+    if isinstance(sys, lsys_types.SSD):
+        A = la.logm(sys.A) / sys.sampletime
+        B = la.inv(la.expm(A*sys.sampletime)-np.eye(len(A))) @ A @ sys.B
+        C = sys.C
+        D = sys.D
         return lsys_types.SSC(A, B, C, D)
-    elif isinstance(lsys, lsys_types.TFD):
-        plant = tf2ss(lsys)
+    elif isinstance(sys, lsys_types.TFD):
+        plant = tf2ss(sys)
         return d2c(plant)
     else:
         print("Wrong input data")
         return
-
-
-

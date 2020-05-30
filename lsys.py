@@ -24,7 +24,7 @@ def poles(lsys):
         return np.linalg.eigvals(lsys.A)
     elif isinstance(lsys, TFC) or isinstance(lsys, TFD):
         plant = tf2ss(lsys)
-        poles(plant)
+        return np.linalg.eigvals(plant.A)
     else:
         print("Wrong data type")
 
@@ -55,7 +55,7 @@ def observable(lsys):
             temp = np.linalg.matrix_power(lsys.A, i)
             temp = np.dot(lsys.C, temp)
             Q = np.concatenate((Q, temp), axis=0)
-        if np.linalg.matrix_rank == len(lsys.A):
+        if np.linalg.matrix_rank(Q) == len(lsys.A):
             return True
         else:
             return False
@@ -70,15 +70,15 @@ def stable(lsys):
     if isinstance(lsys, SSC):
         temp = list(np.linalg.eigvals(lsys.A))
         if temp.count(0) > 1:
-            print('System is unstable')
+            # print('System is unstable')
             return False
         else:
             for i in temp:
                 if i.real > 0:
-                    print('System is unstable')
+                    # print('System is unstable')
                     return False
             if temp.count(0) == 1:
-                print('System is on the edge of stability')
+                # print('System is on the edge of stability')
                 return False
             else:
                 flag = 0
@@ -86,7 +86,7 @@ def stable(lsys):
                     if i.real == 0:
                         flag += 1
                 if flag > 0:
-                    print('System is on the edge of stability')
+                    # print('System is on the edge of stability')
                     return False
                 else:
                     for i in range(len(temp)):
@@ -96,23 +96,26 @@ def stable(lsys):
         temp = list(np.linalg.eigvals(lsys.A))
         temp2 = [abs(x) for x in temp]
         if (temp.count(1) + temp.count(-1) > 1) or (temp2.count(1) - temp.count(1) - temp.count(-1) > 2):
-            print('System is unstable')
+            # print('System is unstable')
             return False
         else:
             for i in temp2:
                 if i > 1:
-                    print('System is unstable')
+                    # print('System is unstable')
                     return False
         if temp.count(1) + temp.count(-1) == 1 or temp2.count(1) - temp.count(1) - temp.count(-1) == 2:
-            print('System is on the edge of stability')
+            # print('System is on the edge of stability')
             return False
         else:
             return True
     elif isinstance(lsys, TFC) or isinstance(lsys, TFD):
         plant = tf2ss(lsys)
-        stable(plant)
+        if stable(plant):
+            return True
+        else:
+            return False
     else:
-        print("Wrong data type")
+        # print("Wrong data type")
         return False
 
 
@@ -135,9 +138,9 @@ def transient_time(lsys):
         print("Linear system is not stable or wrong data type")
 
 
-def overshoot(self):
-    if self.is_stable():
-        y = step_response(self)
+def overshoot(sys):
+    if stable(sys):
+        y = step_response(sys)
         maxvar = y[0, 1]
         for i in range(1, len(y)):
             if y[i, 1] > maxvar:
@@ -145,6 +148,7 @@ def overshoot(self):
         var = (maxvar - y[len(y) - 1, 1]) / y[len(y) - 1, 1] * 100
         return var
     else:
+        print("Linear system is unstable")
         return
 
 
@@ -167,19 +171,21 @@ def oscillation_coef(lsys):
             return beta / alpha
     elif isinstance(lsys, TFC) or isinstance(lsys, TFD):
         plant = tf2ss(lsys)
-        oscillation_coef(plant)
+        y = oscillation_coef(plant)
+        return y
     else:
         print("Wrong data type")
 
 
-def attenuation_coef(lsys):
+def damping_coef(lsys):
     if isinstance(lsys, SSC) or isinstance(lsys, SSD):
         if stable(lsys):
             mu = oscillation_coef(lsys)
             return 1 - math.exp(-2 * math.pi / mu)
     elif isinstance(lsys, TFC) or isinstance(lsys, TFD):
         plant = tf2ss(lsys)
-        attenuation_coef(plant)
+        y = damping_coef(plant)
+        return y
     else:
         print("Wrong data type")
 
@@ -229,7 +235,8 @@ def step_response(lsys, step=0.01):
             y = np.concatenate([y, temp], axis=0)
     elif isinstance(lsys, TFC) or isinstance(lsys, TFD):
         plant = tf2ss(lsys)
-        step_response(plant)
+        y = step_response(plant)
+        return y
     else:
         print("Wrong data type")
         return False

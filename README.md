@@ -11,7 +11,7 @@
 	- transient_time - return transient time
 	- overshoot - return lti system overshoot
 	- oscillation_coef - return coefficient of oscillations
-	- attenuation_coef - return attenuation coefficient
+	- damping_coef - return attenuation coefficient
 	- step_response - calculation of output and time values for step response
 	plot_step_response - plot step response
 	
