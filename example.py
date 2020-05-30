@@ -20,12 +20,12 @@ D = np.array([[0.]])
 plant_ssd = lsys.SSD(A, B, C, D, 0.1)
 # Continuous transfer function
 num = np.array([1.])
-den = np.array([1., 2., 1.])
+den = np.array([1., 2., 3.])
 wc = lsys.TFC(num, den)
 # Discrete transfer function
-num = np.array([0.004679, 0.004377])
-den = np.array([1., -1.81, 0.8187])
-wd = lsys.TFD(num, den, 0.1)
+numd = np.array([0.004679, 0.004377])
+dend = np.array([1., -1.81, 0.8187])
+wd = lsys.TFD(numd, dend, 0.1)
 
 #       Functions examples
 # lsys.data()
@@ -42,4 +42,19 @@ print('Poles of discrete transfer function:\n{}'.format(lsys.poles(wd)))
 print('Is plant_ssc controlable?\n{}'.format(lsys.controlable(plant_ssc)))
 # observable
 print('Is plant_ssc observable?\n{}'.format(lsys.observable(plant_ssc)))
+# stable
+print('Is plant_ssc stable?\n{}'.format(lsys.stable(plant_ssc)))
+# transient_time
+print('Transient time of plant_ssd is {}'.format(lsys.transient_time(plant_ssd)))
+# overshoot
+print('Overshoot of wc is {}'.format(lsys.overshoot(wc)))
+# oscillation_coef
+print('Oscillation coefficient of wc is {}'.format(lsys.oscillation_coef(wc)))
+# damping_coef
+print('Damping coefficient of wc is {}'.format(lsys.damping_coef(wc)))
+# step_response
+y = lsys.step_response(plant_ssd)
+# plot_step_response
+lsys.plot_step_response(wc)
+
 
