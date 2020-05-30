@@ -56,5 +56,18 @@ print('Damping coefficient of wc is {}'.format(lsys.damping_coef(wc)))
 y = lsys.step_response(plant_ssd)
 # plot_step_response
 lsys.plot_step_response(wc)
+#       Plants transformation
+# tf2ss
+new_ss = lsys.tf2ss(wd)
+print(lsys.data(new_ss))
+# ss2tf
+new_tf = lsys.ss2tf(plant_ssc)
+print(lsys.data(new_tf))
+# c2d
+new_ss = lsys.c2d(plant_ssc, 0.1)
+print(lsys.data(new_ss))
+# d2c
+new_tf = lsys.d2c(wd)
+print(lsys.data(new_tf))
 
 
