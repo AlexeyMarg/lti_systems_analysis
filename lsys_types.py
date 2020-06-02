@@ -3,10 +3,10 @@ import numpy as np
 
 class SSC:
     def __init__(self, a: np.ndarray, b: np.ndarray, c: np.ndarray, d: np.ndarray):
-        (nA, mA) = np.shape(a)
-        (nB, mB) = np.shape(b)
-        (nC, mC) = np.shape(c)
-        (nD, mD) = np.shape(d)
+        (nA, mA) = a.shape
+        (nB, mB) = b.shape
+        (nC, mC) = c.shape
+        (nD, mD) = d.shape
         if nA != mA:
             print('Matrix A should be square')
             exit()
