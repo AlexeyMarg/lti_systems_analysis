@@ -3,16 +3,19 @@ import numpy as np
 
 class SSC:
     def __init__(self, a: np.ndarray, b: np.ndarray, c: np.ndarray, d: np.ndarray):
-        (nA, mA) = a.shape
-        (nB, mB) = b.shape
-        (nC, mC) = c.shape
-        (nD, mD) = d.shape
+        try:
+            (nA, mA) = a.shape
+            (nB, mB) = b.shape
+            (nC, mC) = c.shape
+            (nD, mD) = d.shape
+        except:
+            raise ValueError
         if nA != mA:
             print('Matrix A should be square')
-            exit()
+            raise ValueError
         elif (nB != nA) or (mB > nA) or (nC > nA) or (mC != nA) or (nD != nC) or (mD > mB):
             print('Matrices dimensions must agree')
-            exit()
+            raise ValueError
         self.A = a
         self.B = b
         self.C = c
@@ -21,21 +24,25 @@ class SSC:
 
 class SSD:
     def __init__(self, a: np.ndarray, b: np.ndarray, c: np.ndarray, d: np.ndarray, sampletime: float):
-        (nA, mA) = np.shape(a)
-        (nB, mB) = np.shape(a)
-        (nC, mC) = np.shape(a)
-        (nD, mD) = np.shape(a)
+        try:
+            (nA, mA) = np.shape(a)
+            (nB, mB) = np.shape(a)
+            (nC, mC) = np.shape(a)
+            (nD, mD) = np.shape(a)
+        except:
+            raise ValueError
         if nA != mA:
             print('Matrix A should be square')
-            exit()
+            raise ValueError
         elif (nB != nA) or (mB > nA) or (nC > nA) or (mC != nA) or (nD != nC) or (mD > mB):
             print('Matrices dimensions must agree')
-            exit()
+            raise ValueError
         self.A = a
         self.B = b
         self.C = c
         self.D = d
         self.sampletime = sampletime
+
 
 class TFC:
     def __init__(self, lsys_num: np.ndarray, lsys_den: np.ndarray):
@@ -44,6 +51,8 @@ class TFC:
             self.den = lsys_den
         else:
             print("Wrong input data")
+            raise ValueError
+
 
 class TFD:
     def __init__(self, lsys_dnum: np.ndarray, lsys_dden: np.ndarray, sampletime: float):
@@ -53,3 +62,4 @@ class TFD:
             self.sampletime = sampletime
         else:
             print("Wrong input data")
+            raise ValueError

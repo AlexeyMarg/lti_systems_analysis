@@ -17,6 +17,7 @@ def data(lsys):
         return lsys.num, lsys.den, lsys.sampletime
     else:
         print("Wrong data type")
+        raise ValueError
 
 
 def poles(lsys):
@@ -27,6 +28,7 @@ def poles(lsys):
         return np.linalg.eigvals(plant.A)
     else:
         print("Wrong data type")
+        raise ValueError
 
 
 def controlable(lsys):
@@ -36,7 +38,6 @@ def controlable(lsys):
             temp = np.linalg.matrix_power(lsys.A, i)
             temp = np.dot(temp, lsys.B)
             U = np.concatenate((U, temp), axis=1)
-            # print(U)
         if np.linalg.matrix_rank(U) == len(lsys.A):
             return True
         else:
@@ -46,6 +47,7 @@ def controlable(lsys):
         controlable(plant)
     else:
         print("Wrong data type")
+        raise ValueError
 
 
 def observable(lsys):
@@ -64,6 +66,7 @@ def observable(lsys):
         observable(plant)
     else:
         print("Wrong data type")
+        raise ValueError
 
 
 def stable(lsys):
@@ -116,7 +119,7 @@ def stable(lsys):
             return False
     else:
         # print("Wrong data type")
-        return False
+        raise ValueError
 
 
 def transient_time(lsys):
@@ -131,11 +134,14 @@ def transient_time(lsys):
                 for i in range(len(temp) - 1):
                     temp[i] = abs(temp[i])
                 return -3 * lsys.sampletime / math.log(max(temp))
+        else:
+            return None
     elif isinstance(lsys, TFC) or isinstance(lsys, TFD):
         plant = tf2ss(lsys)
-        transient_time(plant)
+        return transient_time(plant)
     else:
-        print("Linear system is not stable or wrong data type")
+        # print("Linear system is not stable or wrong data type")
+        raise ValueError
 
 
 def overshoot(sys):
@@ -148,8 +154,8 @@ def overshoot(sys):
         var = (maxvar - y[len(y) - 1, 1]) / y[len(y) - 1, 1] * 100
         return var
     else:
-        print("Linear system is unstable")
-        return
+        # print("Linear system is unstable")
+        return None
 
 
 def oscillation_coef(lsys):
@@ -171,23 +177,26 @@ def oscillation_coef(lsys):
             return beta / alpha
     elif isinstance(lsys, TFC) or isinstance(lsys, TFD):
         plant = tf2ss(lsys)
-        y = oscillation_coef(plant)
-        return y
+        return oscillation_coef(plant)
     else:
-        print("Wrong data type")
+        # print("Wrong data type")
+        raise ValueError
 
 
 def damping_coef(lsys):
     if isinstance(lsys, SSC) or isinstance(lsys, SSD):
         if stable(lsys):
             mu = oscillation_coef(lsys)
-            return 1 - math.exp(-2 * math.pi / mu)
+            if mu != 0:
+                return 1 - math.exp(-2 * math.pi / mu)
+            else:
+                return None
     elif isinstance(lsys, TFC) or isinstance(lsys, TFD):
         plant = tf2ss(lsys)
-        y = damping_coef(plant)
-        return y
+        return damping_coef(plant)
     else:
-        print("Wrong data type")
+        # print("Wrong data type")
+        raise ValueError
 
 
 def step_response(lsys, step=0.01):

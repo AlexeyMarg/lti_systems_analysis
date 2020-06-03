@@ -7,7 +7,7 @@ import sympy as sym
 def tf2ss(lsys_tf):
     if not isinstance(lsys_tf, lsys_types.TFC) and not isinstance(lsys_tf, lsys_types.TFD):
         print("Wrong input data")
-        return
+        raise ValueError
     if lsys_tf.den[0] != 1:
         for i in range(len(lsys_tf.num - 1)):
             lsys_tf.num[i] = lsys_tf.num[i] / lsys_tf.den[0]
@@ -44,7 +44,7 @@ def ss2tf(sys):
             return lsys_types.TFC(np.array(num), np.array(den))
     else:
         print("Wrong input data")
-        return
+        raise ValueError
 
 
 def c2d(sys, T: float):
@@ -59,7 +59,7 @@ def c2d(sys, T: float):
         return c2d(plant, T)
     else:
         print("Wrong input data")
-        return
+        raise ValueError
 
 
 def d2c(sys):
@@ -74,4 +74,4 @@ def d2c(sys):
         return d2c(plant)
     else:
         print("Wrong input data")
-        return
+        raise ValueError
