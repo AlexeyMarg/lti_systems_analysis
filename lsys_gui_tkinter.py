@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox as mb
 import numpy as np
 import lsys
 import ast
@@ -159,38 +160,42 @@ class lsys_gui:
     def init_commands(self):
 
         def bcalc_pressed(event):
-            plant = self.make_sys()
-            s = ''
-            if lsys.stable(plant):
-                s = 'Stability: ' + 'true\n'
+            try:
+                plant = self.make_sys()
+            except:
+                mb.showerror("Error!", "Wrong input data")
             else:
-                s = 'Stability: ' + 'false\n'
-            if lsys.observable(plant):
-                s = s + 'Observability: ' + 'true\n'
-            else:
-                s = s + 'Observability: ' + 'false\n'
-            if lsys.controlable(plant):
-                s = s + 'Controlability: ' + 'true\n'
-            else:
-                s = s + 'Controlability: ' + 'false\n'
-            if lsys.stable(plant):
-                s = s + 'Overshoot: ' + str(lsys.overshoot(plant)) + '\n'
-            else:
-                s = s + 'Overshoot: -'
-            if lsys.stable(plant):
-                s = s + 'Transient time: ' + str(lsys.transient_time(plant)) + '\n'
-            else:
-                s = s + 'Transient time: -'
-            if lsys.stable(plant):
-                s = s + 'Oscillation coefficient: ' + str(lsys.oscillation_coef(plant)) + '\n'
-            else:
-                s = s + 'Oscillation coefficient: -'
-            if lsys.stable(plant):
-                s = s + 'Damping coefficient: ' + str(lsys.damping_coef(plant)) + '\n'
-            else:
-                s = s + 'Damping coefficient: -'
-            s = s + 'Poles: ' + str(lsys.poles(plant)) + '\n'
-            self.label_result['text'] = s
+                s = ''
+                if lsys.stable(plant):
+                    s = 'Stability: ' + 'true\n'
+                else:
+                    s = 'Stability: ' + 'false\n'
+                if lsys.observable(plant):
+                    s = s + 'Observability: ' + 'true\n'
+                else:
+                    s = s + 'Observability: ' + 'false\n'
+                if lsys.controlable(plant):
+                    s = s + 'Controlability: ' + 'true\n'
+                else:
+                    s = s + 'Controlability: ' + 'false\n'
+                if lsys.stable(plant):
+                    s = s + 'Overshoot: ' + str(lsys.overshoot(plant)) + '\n'
+                else:
+                    s = s + 'Overshoot: -'
+                if lsys.stable(plant):
+                    s = s + 'Transient time: ' + str(lsys.transient_time(plant)) + '\n'
+                else:
+                    s = s + 'Transient time: -'
+                if lsys.stable(plant):
+                    s = s + 'Oscillation coefficient: ' + str(lsys.oscillation_coef(plant)) + '\n'
+                else:
+                    s = s + 'Oscillation coefficient: -'
+                if lsys.stable(plant):
+                    s = s + 'Damping coefficient: ' + str(lsys.damping_coef(plant)) + '\n'
+                else:
+                    s = s + 'Damping coefficient: -'
+                s = s + 'Poles: ' + str(lsys.poles(plant)) + '\n'
+                self.label_result['text'] = s
 
         self.bcalc.bind('<Button-1>', bcalc_pressed)
 
